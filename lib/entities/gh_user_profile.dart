@@ -8,4 +8,9 @@ class GHUserProfile {
     required this.avatarUrl,
     required this.email,
   });
+
+  GHUserProfile.fromJson(Map<String, dynamic> data)
+      : login = data["login"],
+        avatarUrl = data["avatarUrl"],
+        email = data["email"];
 }

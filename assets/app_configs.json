@@ -1,0 +1,11 @@
+{
+    "oauth2": {
+        "client_id": "<YOUR CLIENT ID>",
+        "client_secret": "<YOUR CLIENT SECRET>",
+        "auth_base_url": "https://github.com/login/oauth/authorize",
+        "auth_token_url": "https://github.com/login/oauth/access_token",
+        "auth_base_callback": "<YOUR CALLBACK URL>",
+        "scopes": "user",
+        "gql_endpoint": "https://api.github.com/graphql"
+    }
+}
