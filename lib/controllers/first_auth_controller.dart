@@ -31,7 +31,7 @@ class FirstAuthScreenController extends GetxController
 
   void login() => Get.to(() => LoginScreen(repo: LoginRepository()));
 
-  void _offToProfile({required GHUserProfile profile}) => Get.off(
+  void _offToProfile({required GHUserProfile profile}) => Get.offAll(
         () => MyProfileScreen(
           profile: profile,
           repo: MyProfileRepository(),

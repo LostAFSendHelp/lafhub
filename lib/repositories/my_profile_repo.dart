@@ -12,7 +12,7 @@ class MyProfileRepository implements MyProfileRepoExpected {
 
   @override
   Future<void> logoutUser() async {
-    _oauth2Client.logOutUser();
+    _oauth2Client.logoutUser();
     await _localStorage.remove(key: PrefKeys.ACCESS_TOKEN);
   }
 }

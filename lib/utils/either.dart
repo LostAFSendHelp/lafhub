@@ -8,6 +8,9 @@ abstract class Either<L, R> {
   Either onRight(void onRight(R)) {
     return this;
   }
+
+  L? left() => null;
+  R? right() => null;
 }
 
 class Left<L, R> extends Either<L, R> {
@@ -25,6 +28,9 @@ class Left<L, R> extends Either<L, R> {
     onLeft(value);
     return this;
   }
+
+  @override
+  L? left() => value;
 }
 
 class Right<L, R> extends Either<L, R> {
@@ -42,4 +48,7 @@ class Right<L, R> extends Either<L, R> {
     onRight(value);
     return this;
   }
+
+  @override
+  R? right() => value;
 }

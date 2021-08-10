@@ -63,8 +63,7 @@ class LoginRepository implements LoginRepoExpected {
       onRight: (failure) => _failure = failure,
     );
 
-    if (_token != null) {
-    } else {
+    if (_token == null) {
       return Right(value: _failure!);
     }
 

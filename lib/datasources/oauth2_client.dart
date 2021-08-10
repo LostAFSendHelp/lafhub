@@ -21,7 +21,7 @@ abstract class OAuth2ClientExpected {
   Future<Either<String, Failure>> processCallback(String callback);
   Future<Either<GHUserProfile, Failure>> getUserProfile();
   void setAccessToken(String token);
-  void logOutUser();
+  void logoutUser();
 }
 
 class OAuth2ClientMock implements OAuth2ClientExpected {
@@ -67,7 +67,7 @@ class OAuth2ClientMock implements OAuth2ClientExpected {
   void setAccessToken(String token) {}
 
   @override
-  void logOutUser() {}
+  void logoutUser() {}
 }
 
 class OAuth2Client implements OAuth2ClientExpected {
@@ -218,7 +218,7 @@ class OAuth2Client implements OAuth2ClientExpected {
   }
 
   @override
-  void logOutUser() {
+  void logoutUser() {
     _grant = null;
     _gql = null;
     _authUrl = null;

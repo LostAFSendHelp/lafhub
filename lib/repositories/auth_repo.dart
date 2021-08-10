@@ -59,7 +59,7 @@ class AuthRepository implements AuthRepoExpected {
 
     result.fold(
       onLeft: (profile) => _profile = profile,
-      onRight: (failure) => _failure,
+      onRight: (failure) => _failure = failure,
     );
 
     if (_profile == null) {
