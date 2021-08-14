@@ -1,11 +1,11 @@
 abstract class Either<L, R> {
-  Either fold({required void onLeft(L), required void onRight(R)});
+  Either fold({required void onLeft(L l), required void onRight(R r)});
 
-  Either onLeft(void onLeft(L)) {
+  Either onLeft(void onLeft(L l)) {
     return this;
   }
 
-  Either onRight(void onRight(R)) {
+  Either onRight(void onRight(R r)) {
     return this;
   }
 
@@ -19,12 +19,12 @@ class Left<L, R> extends Either<L, R> {
   Left({required this.value});
 
   @override
-  Either fold({required void onLeft(L), required void onRight(R)}) {
+  Either fold({required void onLeft(L l), required void onRight(R r)}) {
     return this.onLeft(onLeft);
   }
 
   @override
-  Either onLeft(void onLeft(L)) {
+  Either onLeft(void onLeft(L l)) {
     onLeft(value);
     return this;
   }
@@ -39,12 +39,12 @@ class Right<L, R> extends Either<L, R> {
   Right({required this.value});
 
   @override
-  Either fold({required void onLeft(L), required void onRight(R)}) {
+  Either fold({required void onLeft(L l), required void onRight(R r)}) {
     return this.onRight(onRight);
   }
 
   @override
-  Either onRight(void onRight(R)) {
+  Either onRight(void onRight(R r)) {
     onRight(value);
     return this;
   }

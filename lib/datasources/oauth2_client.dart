@@ -24,52 +24,6 @@ abstract class OAuth2ClientExpected {
   void logoutUser();
 }
 
-class OAuth2ClientMock implements OAuth2ClientExpected {
-  var returnFailure = false;
-
-  @override
-  OAuth2ClientConfigs getClientConfigs() {
-    return OAuth2ClientConfigs(
-      authUrl: "authUrl",
-      tokenUrl: "tokenUrl",
-      callbackUrl: "callbackUrl",
-    );
-  }
-
-  @override
-  Future<Either<GHUserProfile, Failure>> getUserProfile() async {
-    if (returnFailure) {
-      return Right(value: Failure("description", null));
-    } else {
-      return Left(
-        value: GHUserProfile(
-          login: "login",
-          avatarUrl: "avatarUrl",
-          email: "email",
-        ),
-      );
-    }
-  }
-
-  @override
-  Future<Either<String, Failure>> processCallback(String callback) async {
-    return returnFailure
-        ? Left(value: "token")
-        : Right(
-            value: Failure(
-              "fail to parse token",
-              null,
-            ),
-          );
-  }
-
-  @override
-  void setAccessToken(String token) {}
-
-  @override
-  void logoutUser() {}
-}
-
 class OAuth2Client implements OAuth2ClientExpected {
   final String _clientID;
   final String _clientSecret;
@@ -78,6 +32,7 @@ class OAuth2Client implements OAuth2ClientExpected {
   final String _callbackBaseUrl;
   final String _scopes;
   final String _gqlEndpoint;
+  GHUserProfile? _profile;
 
   Uri? _authUrl;
 
@@ -169,6 +124,10 @@ class OAuth2Client implements OAuth2ClientExpected {
 
   @override
   Future<Either<GHUserProfile, Failure>> getUserProfile() async {
+    if (_profile != null) {
+      return Left(value: _profile!);
+    }
+
     if (_gql == null) {
       return Right(value: NoClientFailure());
     }
@@ -191,7 +150,8 @@ class OAuth2Client implements OAuth2ClientExpected {
 
     try {
       final Map<String, dynamic> data = result.data!["viewer"];
-      return Left(value: GHUserProfile.fromJson(data));
+      _profile = GHUserProfile.fromJson(data);
+      return Left(value: _profile!);
     } catch (e) {
       return Right(value: GetUserProfileFailure(description: e.toString()));
     }
