@@ -16,7 +16,7 @@ class FirstAuthScreenController extends GetxController
     result.fold(
       onLeft: (profile) {
         if (profile != null) {
-          _offToProfile(profile: profile!);
+          _offToProfile(profile: profile);
           change(profile, status: RxStatus.success());
         } else {
           change(null, status: RxStatus.empty());
@@ -32,10 +32,7 @@ class FirstAuthScreenController extends GetxController
   void login() => Get.to(() => LoginScreen(repo: LoginRepository()));
 
   void _offToProfile({required GHUserProfile profile}) => Get.offAll(
-        () => MyProfileScreen(
-          profile: profile,
-          repo: MyProfileRepository(),
-        ),
+        () => MainNavigationScreen(repo: MainNavigationRepository()),
         transition: Transition.rightToLeft,
       );
 }

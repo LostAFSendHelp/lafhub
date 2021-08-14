@@ -14,9 +14,8 @@ class LoginScreenController extends GetxController {
     result.fold(
       onLeft: (profile) {
         Get.offAll(
-          () => MyProfileScreen(
-            profile: profile,
-            repo: MyProfileRepository(),
+          () => MainNavigationScreen(
+            repo: MainNavigationRepository(),
           ),
           transition: Transition.rightToLeft,
         );
