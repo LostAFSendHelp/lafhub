@@ -22,6 +22,11 @@ abstract class OAuth2ClientExpected {
   Future<Either<GHUserProfile, Failure>> getUserProfile();
   void setAccessToken(String token);
   void logoutUser();
+  Future<Either<List<GHRepository>, Failure>> getRepositories({
+    required String query,
+    String? cursor,
+    void cursorCallback(String cursor)?,
+  });
 }
 
 class OAuth2Client implements OAuth2ClientExpected {
@@ -158,6 +163,68 @@ class OAuth2Client implements OAuth2ClientExpected {
   }
 
   @override
+  Future<Either<List<GHRepository>, Failure>> getRepositories({
+    required String query,
+    String? cursor,
+    void cursorCallback(String cursor)?,
+  }) async {
+    if (_gql == null) {
+      return Right(value: NoClientFailure());
+    }
+
+    final _cursor = cursor == null ? "null" : "\"$cursor\"";
+    final _query = '''
+    query { 
+      search(first: 10, type: REPOSITORY, query: "$query", after: $_cursor) { 
+        edges {
+          cursor
+          node {
+            ... on Repository {
+              name
+              stargazerCount
+              primaryLanguage {
+                name
+                color
+              }
+              owner {
+                ... on User {
+                  login
+                  email
+                  avatarUrl
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+    ''';
+
+    try {
+      final _result = await _gqlClient.query(
+        QueryOptions(
+          document: gql(_query),
+        ),
+      );
+
+      final _edgeData = _result.data!["edges"] as List<dynamic>;
+
+      if (_edgeData.isEmpty) {
+        return Left(value: []);
+      }
+
+      final _edges =
+          _edgeData.map((e) => GHGQLEdge<GHRepository>.fromJson(e)).toList();
+      final _list = _edges.map((e) => e.object).toList();
+      final _cursor = _edges.last.cursor;
+      cursorCallback?.call(_cursor);
+      return Left(value: _list);
+    } catch (e) {
+      return Right(value: GetRepositoriesFailure());
+    }
+  }
+
+  @override
   Future<Either<String, Failure>> processCallback(String callback) async {
     try {
       final _result = await _codeGrant
@@ -192,4 +259,9 @@ class NoClientFailure extends Failure {
 class GetUserProfileFailure extends Failure {
   GetUserProfileFailure({String? description})
       : super("Failed to get User profile data ${description ?? ""}", null);
+}
+
+class GetRepositoriesFailure extends Failure {
+  GetRepositoriesFailure({String? description})
+      : super("Failed to get Repositories ${description ?? ""}", null);
 }

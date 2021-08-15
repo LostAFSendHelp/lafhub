@@ -14,9 +14,7 @@ extension NavTypeUI on NavigationPageType {
         );
 
       case NavigationPageType.explore:
-        return Center(
-          child: Text("Explore"),
-        );
+        return ExploreScreen();
 
       case NavigationPageType.profile:
         return Center(
